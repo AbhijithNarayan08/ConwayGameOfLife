@@ -22,7 +22,7 @@ public class GridManager : MonoBehaviour
 
     private CellObject[,] cellObjects;
 
-    private const float gridSpace = 1;
+    private const float gridSpace = 1.05f;
 
     private const float delay = 0.5f;
 
@@ -65,14 +65,14 @@ public class GridManager : MonoBehaviour
         height = width = m_GridSize;
         createGrid();
         
-        customUpdate();
+        tick();
     }
 
-    async void customUpdate()
+    async void tick()
     {
         if (Application.isPlaying)
         {
-            await   Task.Delay(TimeSpan.FromSeconds( delay ));
+            await Task.Delay(TimeSpan.FromSeconds( delay ));
 
             countNeighbours();
 
@@ -81,9 +81,7 @@ public class GridManager : MonoBehaviour
                 ControllCellPopulation();
                 genCounterEvent?.Invoke();
             }
-            customUpdate();
-
-            Debug.Log("update called");
+            tick();
         }
         else
         {

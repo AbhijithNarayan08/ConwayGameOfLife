@@ -26,7 +26,7 @@ public class CellObject : MonoBehaviour
         
         if(spriteRenderer != null)
         {
-            spriteRenderer.color = (alive == true) ? Color.black : Color.white;
+            spriteRenderer.color = (alive == true) ? Color.green : Color.black;
         }
     }
 }
