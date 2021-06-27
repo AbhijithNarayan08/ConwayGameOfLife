@@ -1,29 +1,24 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
-
-public abstract class AbstractFactory<T> : MonoBehaviour where T : MonoBehaviour
+public abstract class AbstractFactory<T> :MonoBehaviour , IFactory <T>  where T : MonoBehaviour
 {
-    [SerializeField]
-    public T prefab;
-    public System.Object Instance => LazyInstance.Value;
-    public readonly Lazy<System.Object> LazyInstance = new Lazy<System.Object>(CreateSingleton);
+    [SerializeField][NotNull]
+    protected T m_Prefab;
+
+    public T CreateSingleton()
+    {
+        throw new NotImplementedException();
+    }
 
     public virtual T GetNewInstance()
     {
-        return Instantiate(prefab);
+        return Instantiate(m_Prefab);
     }
 
     public virtual T GetNewInstance(Vector3 position, Quaternion rotation)
     {
-        return Instantiate(prefab, position, rotation);
-    }
-
-
-    public static System.Object CreateSingleton()
-    {
-        var instance = Activator.CreateInstance((typeof(T)));
-        return instance;
+        return Instantiate(m_Prefab, position, rotation);
     }
 }

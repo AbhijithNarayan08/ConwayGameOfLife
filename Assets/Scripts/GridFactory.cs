@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridFactory : AbstractFactory<CellObject>
 {
-    public override CellObject GetNewInstance(  )
+    public override CellObject GetNewInstance()
     {
        return base.GetNewInstance();
     }

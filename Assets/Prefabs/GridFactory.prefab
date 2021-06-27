@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be351dc13e5919247917253f9000c1fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5966734040663866394, guid: 5bcdf2fdf2e15c1468e040b1985a3032, type: 3}
+  m_Prefab: {fileID: 5966734040663866394, guid: 5bcdf2fdf2e15c1468e040b1985a3032, type: 3}
 --- !u!61 &6133061018194726235
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -13,9 +13,8 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     public GridFactory m_GridFactory;
 
-    [SerializeField]
-    private float m_delay = 0;
-
+    [HideInInspector]
+    public static event Action genCounterEvent;
 
     private int height = 0;
 
@@ -23,14 +22,23 @@ public class GridManager : MonoBehaviour
 
     private CellObject[,] cellObjects;
 
-    private float gridSpace = 1;
+    private const float gridSpace = 1;
+
+    private const float delay = 0.5f;
 
     private bool isPlaying = false;
 
+    private bool isOverPopulated = false;
+
+    private bool isUnderPopulated = false;
+
+    private bool isOptimalPopulation = false;
+
+
     private void OnEnable() 
     {
-        UI_Controller.StartEvent += startGame;
-        UI_Controller.ClearEvent += clearBoard;
+        UiController.StartEvent += startGame;
+        UiController.ClearEvent += clearBoard;
     }
 
     private void clearBoard()
@@ -43,8 +51,8 @@ public class GridManager : MonoBehaviour
                 cellObjects[x,y].SetStatus(false);
             }
         }
+        
         isPlaying = false;
-
     }
 
     private void startGame()
@@ -64,12 +72,14 @@ public class GridManager : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            await   Task.Delay(TimeSpan.FromSeconds( m_delay ));
-        
-            CountNeighbours();
+            await   Task.Delay(TimeSpan.FromSeconds( delay ));
+
+            countNeighbours();
+
             if(isPlaying)
             {
                 ControllCellPopulation();
+                genCounterEvent?.Invoke();
             }
             customUpdate();
 
@@ -81,14 +91,7 @@ public class GridManager : MonoBehaviour
         }
         
     }
-
-    private void Update()
-    {
-        
-        
-    }
-
-    private void CountNeighbours()
+    private void countNeighbours()
     {
         for (int y = 0; y < height; y++)
         {
@@ -186,23 +189,21 @@ public class GridManager : MonoBehaviour
 
     public void ControllCellPopulation()
     {
-        for (var y = 0; y < height; y++)
+        
+        for (int y = 0; y < height; y++)
         {
-            for (var x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
                 if (cellObjects[x, y].m_IsAlive)
                 {
-                    if (cellObjects[x, y].m_NumNeighbours != 2 && cellObjects[x, y].m_NumNeighbours != 3)
-                    {
-                        cellObjects[x, y].SetStatus(false);
-                    }
+                    isOverPopulated = cellObjects[x, y].m_NumNeighbours > 3;
+                    isUnderPopulated = cellObjects[x, y].m_NumNeighbours < 2;
+                    cellObjects[x, y].SetStatus(!(isOverPopulated || isUnderPopulated));
                 }
                 else
                 {
-                    if (cellObjects[x, y].m_NumNeighbours == 3)
-                    {
-                        cellObjects[x, y].SetStatus(true);
-                    }
+                    isOptimalPopulation = cellObjects[x, y].m_NumNeighbours == 3;
+                    cellObjects[x, y].SetStatus(isOptimalPopulation);
                 }
             }
         }
@@ -229,8 +230,8 @@ public class GridManager : MonoBehaviour
 
     void OnDisable() 
     {
-        UI_Controller.StartEvent -= startGame;
-        UI_Controller.ClearEvent -= clearBoard;
+        UiController.StartEvent -= startGame;
+        UiController.ClearEvent -= clearBoard;
     }
 
 }

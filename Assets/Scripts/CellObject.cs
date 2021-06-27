@@ -5,21 +5,28 @@ using UnityEngine;
 public class CellObject : MonoBehaviour
 {
     public bool m_IsAlive = false;
+
     public int m_NumNeighbours = 0;
+
+    private SpriteRenderer spriteRenderer = null;
+
+    private void Awake()
+    {
+       spriteRenderer = GetComponent<SpriteRenderer>(); 
+    }
 
     public void OnMouseDown()
     {
         SetStatus(!m_IsAlive);
-        Debug.Log("Hit here");
     }
 
     public void SetStatus(bool alive)
     {
-        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-
         m_IsAlive = alive;
-
-        renderer.color = (alive == true) ? Color.black : Color.white;
-
+        
+        if(spriteRenderer != null)
+        {
+            spriteRenderer.color = (alive == true) ? Color.black : Color.white;
+        }
     }
 }
